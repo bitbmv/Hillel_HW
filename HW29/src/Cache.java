@@ -6,6 +6,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Cache<K, V> {
     private final ConcurrentHashMap<Integer, CacheObj> cacheMap = new ConcurrentHashMap<>();
+    private long default_ttl=100;
+
+    // задать время жизни в кэше по умолчанию
+    public void setDefault_ttl(long default_ttl) throws IndexOutOfBoundsException {
+        if (default_ttl < 100) {
+            System.err.println("Too short TTL for cache storage. TTL should be biggest than 100 ms");
+            throw new IndexOutOfBoundsException();
+        }
+        this.default_ttl = default_ttl;
+    }
+
+    // сохранить в кэше значение ключа со времени жизни по умолчанию
+    public String put(K key, V value) {
+        return put(key, value, default_ttl);
+    }
 
     // сохранить в кэше значение ключа с указанием времени жизни
     public String put(K key, V value, long ttl_milliseconds) {
@@ -22,7 +37,7 @@ public class Cache<K, V> {
         int hashCode = key.hashCode();
         cacheObj = cacheMap.get(hashCode);
         if (cacheObj == null) {
-            System.err.println("not found in cache.");
+            System.err.println("not found in cache");
             throw new NoSuchElementException();
         }
         if (cacheObj.bestBefore < System.currentTimeMillis()) {

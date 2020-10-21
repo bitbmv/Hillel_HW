@@ -5,7 +5,7 @@ public class Main {
         Cache cache = new Cache();
 
         System.out.println(cache.put(1, "111", 1000));
-        System.out.println(cache.put("2", 222, 500));
+        System.out.println(cache.put("2", 222));
         System.out.println(cache.put(true, null, 500));
 
         try {
@@ -29,8 +29,22 @@ public class Main {
             // code for generating new value...
         }
 
+
+        try {
+            System.out.println("set cache default_ttl=50: ");
+            cache.setDefault_ttl(50);
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
         System.out.println("sleeping 400ms...");
         Thread.sleep(400);
+
+        try {
+            System.out.println("set cache default_ttl=1000");
+            cache.setDefault_ttl(1000);
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+        System.out.println(cache.put("2", 222));
 
         try {
             System.out.print("trying get value for key 1: ");
@@ -59,6 +73,8 @@ public class Main {
         // пытаемся передать null в качестве ключа
         System.out.print("trying put value with key=null: ");
         cache.put(null, "111", 1000);
+
+        cache.clearAll();
     }
 
 }
